@@ -183,7 +183,7 @@ const TherapistsPage = () => {
               <SelectValue placeholder="Location" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Any Location</SelectItem>
+              <SelectItem value="any-location">Any Location</SelectItem>
               {locations.map((location) => (
                 <SelectItem key={location} value={location}>
                   {location}
@@ -197,7 +197,7 @@ const TherapistsPage = () => {
               <SelectValue placeholder="Specialty" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Any Specialty</SelectItem>
+              <SelectItem value="any-specialty">Any Specialty</SelectItem>
               {specialties.map((specialty) => (
                 <SelectItem key={specialty} value={specialty}>
                   {specialty}
@@ -211,7 +211,7 @@ const TherapistsPage = () => {
               <SelectValue placeholder="Language" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Any Language</SelectItem>
+              <SelectItem value="any-language">Any Language</SelectItem>
               {languages.map((language) => (
                 <SelectItem key={language} value={language}>
                   {language}
