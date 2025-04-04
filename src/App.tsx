@@ -14,6 +14,7 @@ import ChatPage from "./pages/ChatPage";
 import ResourcesPage from "./pages/ResourcesPage";
 import TherapistsPage from "./pages/TherapistsPage";
 import NotFound from "./pages/NotFound";
+import DataInitializer from './components/DataInitializer';
 
 const queryClient = new QueryClient();
 
@@ -24,6 +25,7 @@ const App = () => (
         <ChatProvider>
           <Toaster />
           <Sonner />
+          <DataInitializer />
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Layout />}>
