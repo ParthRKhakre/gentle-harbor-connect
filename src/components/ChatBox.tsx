@@ -6,12 +6,14 @@ import { useChat } from "@/contexts/ChatContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { ArrowLeft, Send } from "lucide-react";
 import { format } from "date-fns";
+import FeedbackDialog from "./FeedbackDialog";
 
 const ChatBox = () => {
   const { messages, currentRoom, sendMessage, leaveRoom } = useChat();
   const { user } = useAuth();
   const [messageText, setMessageText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   // Scroll to bottom of messages on new message
   useEffect(() => {
@@ -27,6 +29,17 @@ const ChatBox = () => {
       user.username
     );
     setMessageText("");
+  };
+
+  const handleLeaveRoom = () => {
+    setShowFeedback(true);
+  };
+
+  const handleFeedbackClose = (open: boolean) => {
+    setShowFeedback(open);
+    if (!open) {
+      leaveRoom();
+    }
   };
 
   if (!currentRoom) {
@@ -50,7 +63,7 @@ const ChatBox = () => {
           <Button
             variant="ghost"
             size="icon"
-            onClick={leaveRoom}
+            onClick={handleLeaveRoom}
             className="md:hidden"
           >
             <ArrowLeft size={18} />
@@ -60,6 +73,9 @@ const ChatBox = () => {
             <p className="text-xs text-muted-foreground">{currentRoom.description}</p>
           </div>
         </div>
+        <Button variant="outline" size="sm" onClick={handleLeaveRoom}>
+          Leave Room
+        </Button>
       </div>
       
       <div className="flex-grow overflow-y-auto p-4 space-y-4">
@@ -113,6 +129,14 @@ const ChatBox = () => {
           </Button>
         </form>
       </div>
+
+      {currentRoom && (
+        <FeedbackDialog 
+          open={showFeedback}
+          onOpenChange={handleFeedbackClose}
+          roomName={currentRoom.name}
+        />
+      )}
     </div>
   );
 };
