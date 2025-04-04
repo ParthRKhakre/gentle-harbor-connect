@@ -1,5 +1,6 @@
 
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
 
 // Mock resource data
 const resourcesData = [
@@ -77,19 +78,26 @@ const resourcesData = [
 
 export const seedResources = async () => {
   try {
-    const { data: existingResources } = await supabase
+    // Check if resources already exist
+    const { data: existingResources, error: checkError } = await supabase
       .from('resources')
       .select('id')
-      .limit(1);
+      .limit(1) as { 
+        data: Database['public']['Tables']['resources']['Row'][] | null; 
+        error: Error | null 
+      };
     
     // Only seed if there are no existing resources
     if (!existingResources?.length) {
-      const { data, error } = await supabase
+      const { error: insertError } = await supabase
         .from('resources')
-        .insert(resourcesData);
+        .insert(resourcesData) as {
+          data: null;
+          error: Error | null; 
+        };
       
-      if (error) {
-        console.error('Error seeding resources:', error);
+      if (insertError) {
+        console.error('Error seeding resources:', insertError);
         return false;
       }
       
