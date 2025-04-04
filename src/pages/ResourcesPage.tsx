@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ResourceSearch from "@/components/resources/ResourceSearch";
 import ResourceCategoryTabs from "@/components/resources/ResourceCategoryTabs";
 import ResourceInfo from "@/components/resources/ResourceInfo";
+import AddResourceButton from "@/components/resources/AddResourceButton";
 import { useResources } from "@/hooks/useResources";
 
 const ResourcesPage = () => {
@@ -26,7 +27,10 @@ const ResourcesPage = () => {
           </p>
         </div>
         
-        <ResourceSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+        <div className="flex flex-col md:flex-row gap-4 items-center">
+          <ResourceSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+          <AddResourceButton />
+        </div>
       </div>
       
       {isLoading ? (

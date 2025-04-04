@@ -1,23 +1,21 @@
-
 import { useState, useEffect } from "react";
 import { ResourceType } from "@/components/ResourceCard";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Database } from "@/integrations/supabase/types";
+import { useQuery } from "@tanstack/react-query";
 
 export const useResources = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [filteredResources, setFilteredResources] = useState<ResourceType[]>([]);
-  const [resources, setResources] = useState<ResourceType[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
   
-  useEffect(() => {
-    const fetchResources = async () => {
+  const { data: resources = [], isLoading } = useQuery({
+    queryKey: ['resources'],
+    queryFn: async () => {
       try {
-        setIsLoading(true);
         const { data, error } = await supabase
           .from('resources')
           .select('*') as { 
@@ -39,13 +37,14 @@ export const useResources = () => {
             url: resource.url
           }));
           
-          setResources(formattedResources);
-          
           const uniqueCategories = Array.from(
             new Set(formattedResources.map(resource => resource.category))
           );
           setCategories(uniqueCategories);
+          
+          return formattedResources;
         }
+        return [];
       } catch (error) {
         console.error("Error fetching resources:", error);
         toast({
@@ -54,7 +53,7 @@ export const useResources = () => {
           variant: "destructive"
         });
         
-        setResources([
+        const mockResources = [
           {
             id: "1",
             title: "Mindfulness Meditation Guide",
@@ -135,18 +134,17 @@ export const useResources = () => {
             tags: ["emergency", "hotlines", "support"],
             url: "/resources/10"
           },
-        ]);
+        ];
         
-        setCategories(Array.from(new Set(resources.map(resource => resource.category))));
-      } finally {
-        setIsLoading(false);
+        setCategories(Array.from(new Set(mockResources.map(resource => resource.category))));
+        return mockResources;
       }
-    };
-    
-    fetchResources();
-  }, [toast]);
+    }
+  });
   
   useEffect(() => {
+    if (!resources) return;
+    
     let filtered = resources;
     
     if (searchQuery) {
